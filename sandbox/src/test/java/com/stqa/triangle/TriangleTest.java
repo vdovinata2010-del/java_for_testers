@@ -49,4 +49,22 @@ public class TriangleTest {
             // OK
         }
     }
+    @Test
+    void testEqualTriangles1 () {
+        Triangle t1 = new Triangle(9,12,15);
+        Triangle t2 = new Triangle(9,12,15);
+        Assertions.assertEquals(t1, t2);
+    }
+    @Test
+    void testEqualTriangles2 () {
+        Triangle t1 = new Triangle(9,12,15);
+        Triangle t2 = new Triangle(15,9,12);
+        Assertions.assertEquals(t1, t2);
+    }
+    @Test
+    void testNotEqualTriangles () {
+        Triangle t1 = new Triangle(9,12,15);
+        Triangle t2 = new Triangle(3,4,5);
+        Assertions.assertNotEquals(t1, t2);
+    }
 }

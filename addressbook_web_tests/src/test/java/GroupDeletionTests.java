@@ -25,7 +25,9 @@ public class GroupDeletionTests {
 
     @Test
     public void canDeleteGroup() {
-        driver.findElement(By.linkText("groups")).click();
+        if (!isElementPresent(By.name("new"))) {
+            driver.findElement(By.linkText("groups")).click();
+        }
         if (!isElementPresent(By.name("selected[]"))) {
             driver.findElement(By.name("new")).click();
             driver.findElement(By.name("group_name")).click();

@@ -5,7 +5,7 @@ public class GroupDeletionTests extends TestBase {
     @Test
     public void canDeleteGroup() {
         openGroupsPage();
-        if (isGroupPresent()) {
+        if (!isGroupPresent()) {
             createGroup();
         }
         removeGroup();

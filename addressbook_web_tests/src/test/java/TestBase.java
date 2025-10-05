@@ -55,6 +55,6 @@ public class TestBase {
     }
 
     protected boolean isGroupPresent() {
-        return !isElementPresent(By.name("selected[]"));
+        return isElementPresent(By.name("selected[]"));
     }
 }

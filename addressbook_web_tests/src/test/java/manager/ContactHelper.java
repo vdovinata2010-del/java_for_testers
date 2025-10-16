@@ -15,14 +15,64 @@ public class ContactHelper extends HelperBase {
         }
     }
 
+    /*
     public boolean isContactPresent() {
         openContactsPage();
         return isElementPresent(By.name("selected[]"));
     }
+     */
+
+    public int getCount() {
+        openContactsPage();
+        return manager.driver.findElements(By.name("selected[]")).size();
+    }
 
     public void createContact(ContactData contact) {
-        click(By.linkText("add new"));
+        initContactCreation();
+        fillContactForm(contact);
+        submitContactCreation();
+        returnToHome();
+    }
 
+    public void removeContact() {
+        openContactsPage();
+        selectContact();
+        deleteSelectedContact();
+        // Алерта нет, команду сохраню для себя
+        //manager.driver.switchTo().alert().accept();
+        returnToHome();
+    }
+
+    public void deleteAllContacts() {
+        openContactsPage();
+        selectAllContacts();
+        deleteSelectedContact();
+    }
+
+    private void submitContactCreation() {
+        click(By.name("submit"));
+    }
+
+    private void initContactCreation() {
+        click(By.linkText("add new"));
+    }
+
+    private void deleteSelectedContact() {
+        click(By.xpath("//input[@value='Delete']"));
+    }
+
+    private void selectAllContacts() {
+        var checkboxes = manager.driver.findElements(By.name("selected[]"));
+        for (var checkbox : checkboxes) {
+            checkbox.click();
+        }
+    }
+
+    private void selectContact() {
+        click(By.name("selected[]"));
+    }
+
+    private void fillContactForm(ContactData contact) {
         // Text fields
         type(By.name("firstname"), contact.firstname());
         type(By.name("middlename"), contact.middlename());
@@ -71,17 +121,9 @@ public class ContactHelper extends HelperBase {
             click(By.name("new_group"));
             click(By.xpath("//select[@name='new_group']/option[. = '" + contact.newGroup() + "']"));
         }
-
-        click(By.name("submit"));
-        click(By.linkText("home"));
     }
-
-    public void removeContact() {
-        openContactsPage();
-        click(By.name("selected[]"));
-        click(By.xpath("//input[@value='Delete']"));
-        // Алерта нет, команду сохраню для себя
-        //manager.driver.switchTo().alert().accept();
+    
+    private void returnToHome() {
         click(By.linkText("home"));
     }
 }

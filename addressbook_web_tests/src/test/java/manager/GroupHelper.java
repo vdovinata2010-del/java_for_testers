@@ -15,27 +15,79 @@ public class GroupHelper extends HelperBase {
         }
     }
 
-    public boolean isGroupPresent() {
-        openGroupsPage();
-        return isElementPresent(By.name("selected[]"));
-    }
-
     public void createGroup(GroupData group) {
         openGroupsPage();
-        click(By.name("new"));
-        click(By.name("group_name"));
-        type(By.name("group_name"), group.name());
-        type(By.name("group_header"), group.header());
-        click(By.name("group_footer"));
-        type(By.name("group_footer"), group.footer());
-        click(By.name("submit"));
-        click(By.linkText("group page"));
+        initGroupCreation();
+        fillGroupForm(group);
+        submitGroupCreation();
+        returnToGroupsPage();
     }
 
     public void removeGroup() {
         openGroupsPage();
-        click(By.name("selected[]"));
-        click(By.name("delete"));
+        selectGroup();
+        deleteSelectedGroups();
+        returnToGroupsPage();
+    }
+
+    public void modifyGroup(GroupData modifiedGroup) {
+        openGroupsPage();
+        selectGroup();
+        initGroupModification();
+        fillGroupForm(modifiedGroup);
+        submitGroupModification();
+        returnToGroupsPage();
+    }
+
+    public void deleteAllGroups() {
+        openGroupsPage();
+        selectAllGroups();
+        deleteSelectedGroups();
+    }
+
+    private void submitGroupCreation() {
+        click(By.name("submit"));
+    }
+
+    private void initGroupCreation() {
+        click(By.name("new"));
+    }
+
+    private void deleteSelectedGroups() {
+        click(By.name("delete")); }
+
+    public int getCount() {
+        openGroupsPage();
+        return manager.driver.findElements(By.name("selected[]")).size();
+    }
+
+
+    private void selectAllGroups() {
+        var checkboxes = manager.driver.findElements(By.name("selected[]"));
+        for (var checkbox : checkboxes) {
+            checkbox.click();
+        }
+    }
+
+    private void returnToGroupsPage() {
         click(By.linkText("group page"));
+    }
+
+    private void submitGroupModification() {
+        click(By.name("update"));
+    }
+
+    private void fillGroupForm(GroupData group) {
+        type(By.name("group_name"), group.name());
+        type(By.name("group_header"), group.header());
+        type(By.name("group_footer"), group.footer());
+    }
+
+    private void initGroupModification() {
+        click(By.name("edit"));
+    }
+
+    private void selectGroup() {
+        click(By.name("selected[]"));
     }
 }

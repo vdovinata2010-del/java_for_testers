@@ -1,29 +1,30 @@
 package tests;
 
 import model.ContactData;
-import model.GroupData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class ContactDeletionTests extends TestBase {
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Random;
 
-    /*@Test
-    public void canDeleteContact() {
-        if (!app.contacts().isContactPresent()) {
-            app.contacts().createContact(new ContactData().withFirstname("forDelete"));
-        }
-        app.contacts().removeContact();
-    }*/
+public class ContactDeletionTests extends TestBase {
 
     @Test
     public void canDeleteContact() {
         if (app.contacts().getCount() == 0) {
             app.contacts().createContact(new ContactData().withFirstname("forDelete"));
         }
-        int contactCount = app.contacts().getCount();
-        app.contacts().removeContact();
-        int newContactCount = app.contacts().getCount();
-        Assertions.assertEquals(contactCount - 1, newContactCount);
+        var oldContacts = app.contacts().getList();
+        var rnd = new Random();
+        var index = rnd.nextInt(oldContacts.size());
+        app.contacts().removeContact(oldContacts.get(index));
+        var newContacts = app.contacts().getList();
+        var expectedList = new ArrayList<>(oldContacts);
+        expectedList.remove(index);
+        expectedList.sort(Comparator.comparing(ContactData::id));
+        newContacts.sort(Comparator.comparing(ContactData::id));
+        Assertions.assertEquals(newContacts, expectedList);
     }
 
     @Test

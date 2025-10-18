@@ -2,6 +2,10 @@ package manager;
 
 import model.ContactData;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ContactHelper extends HelperBase {
 
@@ -15,13 +19,6 @@ public class ContactHelper extends HelperBase {
         }
     }
 
-    /*
-    public boolean isContactPresent() {
-        openContactsPage();
-        return isElementPresent(By.name("selected[]"));
-    }
-     */
-
     public int getCount() {
         openContactsPage();
         return manager.driver.findElements(By.name("selected[]")).size();
@@ -34,9 +31,9 @@ public class ContactHelper extends HelperBase {
         returnToHome();
     }
 
-    public void removeContact() {
+    public void removeContact(ContactData contact) {
         openContactsPage();
-        selectContact();
+        selectContact(contact);
         deleteSelectedContact();
         // Алерта нет, команду сохраню для себя
         //manager.driver.switchTo().alert().accept();
@@ -47,6 +44,26 @@ public class ContactHelper extends HelperBase {
         openContactsPage();
         selectAllContacts();
         deleteSelectedContact();
+    }
+
+    public void modifyContact(ContactData contact, ContactData modifiedContact) {
+        openContactsPage();
+        selectContact(contact);
+        initContactModification();
+        fillContactForm(modifiedContact);
+        submitContactModification();
+        returnToHome();
+    }
+
+    private void initContactModification() {
+        ((JavascriptExecutor) driver)
+                .executeScript("arguments[0].scrollIntoView(true);",
+                        driver.findElement(By.xpath("//img[@alt='Edit']")));
+        click(By.xpath("//img[@alt='Edit']"));
+    }
+
+    private void submitContactModification() {
+        click(By.name("update"));
     }
 
     private void submitContactCreation() {
@@ -68,8 +85,8 @@ public class ContactHelper extends HelperBase {
         }
     }
 
-    private void selectContact() {
-        click(By.name("selected[]"));
+    private void selectContact(ContactData contact) {
+        click(By.cssSelector(String.format("input[value='%s']", contact.id())));
     }
 
     private void fillContactForm(ContactData contact) {
@@ -122,8 +139,26 @@ public class ContactHelper extends HelperBase {
             click(By.xpath("//select[@name='new_group']/option[. = '" + contact.newGroup() + "']"));
         }
     }
-    
+
     private void returnToHome() {
         click(By.linkText("home"));
+    }
+
+    public List<ContactData> getList() {
+        openContactsPage();
+        var contacts = new ArrayList<ContactData>();
+        var tds = manager.driver.findElements(By.xpath("//tr[.//input[@name='selected[]']]"));
+        for (var td : tds) {
+            var cells = td.findElements(By.tagName("td"));
+            var checkbox = cells.get(0).findElement(By.name("selected[]"));
+            var lastname = cells.get(1).getText();
+            var firstname = cells.get(2).getText();
+            var id = checkbox.getAttribute("value");
+            contacts.add(new ContactData()
+                    .withId(id)
+                    .withLastname(lastname)
+                    .withFirstname(firstname));
+        }
+        return contacts;
     }
 }

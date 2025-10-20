@@ -49,17 +49,18 @@ public class ContactHelper extends HelperBase {
     public void modifyContact(ContactData contact, ContactData modifiedContact) {
         openContactsPage();
         selectContact(contact);
-        initContactModification();
+        initContactModification(contact);
         fillContactForm(modifiedContact);
         submitContactModification();
         returnToHome();
     }
 
-    private void initContactModification() {
+    private void initContactModification(ContactData contact) {
+        var locator = By.cssSelector("a[href='edit.php?id=" + contact.id() + "']");
         ((JavascriptExecutor) driver)
                 .executeScript("arguments[0].scrollIntoView(true);",
-                        driver.findElement(By.xpath("//img[@alt='Edit']")));
-        click(By.xpath("//img[@alt='Edit']"));
+                        driver.findElement(locator));
+        click(locator);
     }
 
     private void submitContactModification() {
@@ -75,18 +76,26 @@ public class ContactHelper extends HelperBase {
     }
 
     private void deleteSelectedContact() {
-        click(By.xpath("//input[@value='Delete']"));
+        var locator = By.xpath("//input[@value='Delete']");
+        ((JavascriptExecutor) driver)
+                .executeScript("arguments[0].scrollIntoView(true);", driver.findElement(locator));
+        click(locator);
     }
 
     private void selectAllContacts() {
-        var checkboxes = manager.driver.findElements(By.name("selected[]"));
+        var checkboxes = driver.findElements(By.name("selected[]"));
         for (var checkbox : checkboxes) {
+            ((JavascriptExecutor) driver)
+                    .executeScript("arguments[0].scrollIntoView(true);", checkbox);
             checkbox.click();
         }
     }
 
     private void selectContact(ContactData contact) {
-        click(By.cssSelector(String.format("input[value='%s']", contact.id())));
+        var locator = By.cssSelector(String.format("input[value='%s']", contact.id()));
+        ((JavascriptExecutor) driver)
+                .executeScript("arguments[0].scrollIntoView(true);", driver.findElement(locator));
+        click(locator);
     }
 
     private void fillContactForm(ContactData contact) {

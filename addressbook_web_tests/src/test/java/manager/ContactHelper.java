@@ -147,6 +147,13 @@ public class ContactHelper extends HelperBase {
             click(By.name("new_group"));
             click(By.xpath("//select[@name='new_group']/option[. = '" + contact.newGroup() + "']"));
         }
+
+        //Photo
+        //attach(By.name("photo"), contact.photo());
+
+        if (contact.photo() != null && !contact.photo().isEmpty()) {
+            attach(By.name("photo"), contact.photo());
+        }
     }
 
     private void returnToHome() {

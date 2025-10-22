@@ -1,5 +1,6 @@
 package tests;
 
+import common.CommonFunctions;
 import model.ContactData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -20,34 +21,38 @@ public class ContactCreationTests extends TestBase {
                     result.add(new ContactData()
                             .withFirstname(firstname)
                             .withLastname(lastname)
-                            .withMobile(mobile));
+                            .withMobile(mobile)
+                            .withPhoto(randomFile("src/test/resources/images"))
+                            );
                 }
             }
         }
         for (int i = 0; i < 5; i++) {
             result.add(new ContactData()
-                    .withFirstname(randomString(i * 10))
-                    .withMiddlename(randomString(i * 10))
-                    .withLastname(randomString(i * 10))
-                    .withNickname(randomString(i * 10))
-                    .withTitle(randomString(i * 10))
-                    .withCompany(randomString(i * 10))
-                    .withAddress(randomString(i * 10))
-                    .withHome(randomString(i * 10))
-                    .withMobile(randomString(i * 10))
-                    .withWork(randomString(i * 10))
-                    .withFax(randomString(i * 10))
-                    .withEmail(randomString(i * 10) + "@example.com")
-                    .withEmail2(randomString(i * 10) + "@example.com")
-                    .withEmail3(randomString(i * 10) + "@example.com")
-                    .withHomepage("http://" + randomString(i * 10) + ".com")
+                    .withFirstname(CommonFunctions.randomString(i * 10))
+                    .withMiddlename(CommonFunctions.randomString(i * 10))
+                    .withLastname(CommonFunctions.randomString(i * 10))
+                    .withNickname(CommonFunctions.randomString(i * 10))
+                    .withTitle(CommonFunctions.randomString(i * 10))
+                    .withCompany(CommonFunctions.randomString(i * 10))
+                    .withAddress(CommonFunctions.randomString(i * 10))
+                    .withHome(CommonFunctions.randomString(i * 10))
+                    .withMobile(CommonFunctions.randomString(i * 10))
+                    .withWork(CommonFunctions.randomString(i * 10))
+                    .withFax(CommonFunctions.randomString(i * 10))
+                    .withEmail(CommonFunctions.randomString(i * 10) + "@example.com")
+                    .withEmail2(CommonFunctions.randomString(i * 10) + "@example.com")
+                    .withEmail3(CommonFunctions.randomString(i * 10) + "@example.com")
+                    .withHomepage("http://" + CommonFunctions.randomString(i * 10) + ".com")
                     .withBday("11")
                     .withBmonth("December")
                     .withByear("1111")
                     .withAday("10")
                     .withAmonth("June")
                     .withAyear("2222")
-                    .withNewGroup("[none]"));
+                    .withNewGroup("[none]")
+                    .withPhoto(randomFile("src/test/resources/images"))
+            );
         }
         return result;
     }
@@ -84,6 +89,7 @@ public class ContactCreationTests extends TestBase {
                 .withAmonth("")
                 .withAyear("")
                 .withNewGroup("")
+                .withPhoto(newContacts.get(newContacts.size() - 1).photo())
         );
         expectedList.sort(compareById);
 

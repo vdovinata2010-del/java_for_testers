@@ -59,7 +59,7 @@ public class ContactCreationTests extends TestBase {
         return result;*/
 
         var mapper = new JsonMapper();
-        var value = mapper.readValue(new File("contacts.json"), new TypeReference<List<ContactData>>() {});
+        var value = mapper.readValue(new File(properties.getProperty("data.contacts.file")), new TypeReference<List<ContactData>>() {});
         result.addAll(value);
         return result;
     }

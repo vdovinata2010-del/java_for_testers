@@ -36,7 +36,7 @@ public class GroupCreationTests extends TestBase {
         //var json = Files.readString(Paths.get("groups.json"));
 
         var mapper = new JsonMapper();
-        var value = mapper.readValue(new File("groups.json"), new TypeReference<List<GroupData>>() {});
+        var value = mapper.readValue(new File(properties.getProperty("data.groups.file")), new TypeReference<List<GroupData>>() {});
         result.addAll(value);
         return result;
     }

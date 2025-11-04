@@ -5,6 +5,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
+import java.time.Duration;
 import java.util.Properties;
 
 public class ApplicationManager {
@@ -13,12 +14,15 @@ public class ApplicationManager {
     private GroupHelper groups;
     private ContactHelper contacts;
     public Properties properties;
+    public JdbcHelper jdbc;
+    public HibernateHelper hbm;
 
     public void init(String browser, Properties properties) {
         this.properties = properties;
         if (driver == null) {
             if ("firefox".equals(browser)) {
                 driver = new FirefoxDriver();
+                driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(1));
             } else if ("chrome".equals(browser)) {
                 driver = new ChromeDriver();
             } else {
@@ -52,5 +56,19 @@ public class ApplicationManager {
             contacts = new ContactHelper(this);
         }
         return contacts;
+    }
+
+    public JdbcHelper jdbc() {
+        if (jdbc == null) {
+            jdbc = new JdbcHelper(this);
+        }
+        return jdbc;
+    }
+
+    public HibernateHelper hbm() {
+        if (hbm == null) {
+            hbm = new HibernateHelper(this);
+        }
+        return hbm;
     }
 }

@@ -12,14 +12,15 @@ public class ContactDeletionTests extends TestBase {
 
     @Test
     public void canDeleteContact() {
-        if (app.contacts().getCount() == 0) {
-            app.contacts().createContact(new ContactData().withFirstname("forDelete"));
+        if (app.hbm().getContactCount() == 0) {
+            app.hbm().createContact(new ContactData().withFirstname("forDelete"));
+            app.contacts().returnToHome();
         }
-        var oldContacts = app.contacts().getList();
+        var oldContacts = app.hbm().getContactList();
         var rnd = new Random();
         var index = rnd.nextInt(oldContacts.size());
         app.contacts().removeContact(oldContacts.get(index));
-        var newContacts = app.contacts().getList();
+        var newContacts = app.hbm().getContactList();
         var expectedList = new ArrayList<>(oldContacts);
         expectedList.remove(index);
         expectedList.sort(Comparator.comparing(ContactData::id));
@@ -29,10 +30,11 @@ public class ContactDeletionTests extends TestBase {
 
     @Test
     void canDeleteAllContacts () {
-        if (app.contacts().getCount() == 0) {
-            app.contacts().createContact(new ContactData().withFirstname("forDelete"));
+        if (app.hbm().getContactCount() == 0) {
+            app.hbm().createContact(new ContactData().withFirstname("forDelete"));
+            app.contacts().returnToHome();
         }
         app.contacts().deleteAllContacts();
-        Assertions.assertEquals(0, app.contacts().getCount());
+        Assertions.assertEquals(0, app.hbm().getContactCount());
     }
 }

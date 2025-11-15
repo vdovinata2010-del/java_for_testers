@@ -17,15 +17,19 @@ public class UserRegistrationTests extends TestBase {
         var password = "password";
 
         //создать адрес(пользователья) на почтовом сервере(jameshelper)
-        app.jamesCli().addUser(email, password);
+        //app.jamesCli().addUser(email, password);
+        app.jamesApi().addUser(email, password);
         app.mail().drain(email, password);
+
+        //регистрация через Api
+        var userId = app.rest().userRegistration(username, email);
 
         // открываем браузер и заполняем форму (браузер)
         var driver = app.driver();
-        driver.get(app.property("web.baseURL") + "signup_page.php");
+        /*driver.get(app.property("web.baseURL") + "signup_page.php");
         driver.findElement(By.name("username")).sendKeys(username);
         driver.findElement(By.name("email")).sendKeys(email);
-        driver.findElement(By.cssSelector("input[value='Зарегистрироваться'],input[value='Signup']")).click();
+        driver.findElement(By.cssSelector("input[value='Зарегистрироваться'],input[value='Signup']")).click();*/
 
         //ждем и получаем почту (mailhelper)
         var messages = app.mail().receive(email, password, Duration.ofSeconds(30));

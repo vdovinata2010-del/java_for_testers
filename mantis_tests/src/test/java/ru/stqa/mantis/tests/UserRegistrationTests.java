@@ -16,16 +16,16 @@ public class UserRegistrationTests extends TestBase {
 
         //создать адрес(пользователя) на почтовом сервере
         //через Cli
-        app.jamesCli().addUser(email, password);
+        //app.jamesCli().addUser(email, password);
         //через Api
-        //app.jamesApi().addUser(email, password);
+        app.jamesApi().addUser(email, password);
         app.mail().drain(email, password);
 
         //регистрация
         // через Api
-        //var userId = app.rest().userRegistration(username, email);
+        var userId = app.rest().userRegistration(username, email);
         //через Браузер
-        app.registration().startRegistration(username, email);
+        //app.registration().startRegistration(username, email);
 
         //ждем и получаем почту
         var messages = app.mail().receive(email, password, Duration.ofSeconds(10));

@@ -1,21 +1,31 @@
 package tests;
 
+import io.qameta.allure.Allure;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import model.ContactData;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Random;
 
+@Epic("Addressbook")
+@Feature("Contacts")
 public class ContactDeletionTests extends TestBase {
 
     @Test
+    @DisplayName("Удаление одного контакта")
     public void canDeleteContact() {
-        if (app.hbm().getContactCount() == 0) {
-            app.hbm().createContact(new ContactData().withFirstname("forDelete"));
-            app.contacts().returnToHome();
-        }
+        Allure.step("Проверка предусловия", step -> {
+            if (app.hbm().getContactCount() == 0) {
+                app.hbm().createContact(new ContactData().withFirstname("forDelete"));
+                app.contacts().returnToHome();
+            }
+        });
+
         var oldContacts = app.hbm().getContactList();
         var rnd = new Random();
         var index = rnd.nextInt(oldContacts.size());
@@ -25,10 +35,13 @@ public class ContactDeletionTests extends TestBase {
         expectedList.remove(index);
         expectedList.sort(Comparator.comparing(ContactData::id));
         newContacts.sort(Comparator.comparing(ContactData::id));
+        Allure.step("Валидация результата", step -> {
         Assertions.assertEquals(newContacts, expectedList);
+        });
     }
 
     @Test
+    @DisplayName("Удаление всех контактов")
     void canDeleteAllContacts () {
         if (app.hbm().getContactCount() == 0) {
             app.hbm().createContact(new ContactData().withFirstname("forDelete"));

@@ -1,15 +1,22 @@
 package tests;
 
+import io.qameta.allure.Allure;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import model.ContactData;
 import model.GroupData;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Comparator;
 
+@Epic("Addressbook")
+@Feature("Contacts")
 public class ContactGroupMembership extends TestBase {
 
     @Test
+    @DisplayName("Добавление контакта в группу")
     void canAddContactToGroup() {
         if (app.hbm().getGroupCount() == 0) {
             app.hbm().createGroup(new GroupData("", "test_group_for_add", "header", "footer"));
@@ -28,6 +35,10 @@ public class ContactGroupMembership extends TestBase {
             contact = newContactData.withId(newId);
         }
 
+        Allure.parameter("Contact Firstname", contact.firstname());
+        Allure.parameter("Contact Lastname", contact.lastname());
+        Allure.parameter("Group Name", group.name());
+
         app.contacts().returnToHome();
         app.contacts().selectGroupFilter("[all]");
         var oldRelated = app.hbm().getContactsInGroup(group);
@@ -39,6 +50,7 @@ public class ContactGroupMembership extends TestBase {
 
 
     @Test
+    @DisplayName("Удаление контакта из группы")
     void canRemoveContactFromGroup() {
         if (app.hbm().getGroupCount() == 0) {
             app.hbm().createGroup(new GroupData("", "group_for_remove", "header", "footer"));
@@ -65,6 +77,10 @@ public class ContactGroupMembership extends TestBase {
         }
 
         var contactToRemove = contactsInGroup.get(0);
+
+        Allure.parameter("Contact Firstname", contactToRemove.firstname());
+        Allure.parameter("Contact Lastname", contactToRemove.lastname());
+        Allure.parameter("Group Name", group.name());
 
         var oldRelated = contactsInGroup;
         app.contacts().removeContactFromGroup(contactToRemove, group);

@@ -3,8 +3,12 @@ package tests;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import common.CommonFunctions;
+import io.qameta.allure.Allure;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import model.GroupData;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import java.io.File;
@@ -17,6 +21,8 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Epic("Addressbook")
+@Feature("Groups")
 public class GroupCreationTests extends TestBase {
 
     public static List<GroupData> groupCreateProvider() throws IOException {
@@ -54,9 +60,15 @@ public class GroupCreationTests extends TestBase {
         return Stream.generate(randomGroup).limit(1);
     }
 
-    @ParameterizedTest
+    @DisplayName("Создание группы")
+    @ParameterizedTest(name = "{displayName}")
     @MethodSource("randomGroups")
     public void canCreateGroup(GroupData group) {
+
+        Allure.parameter("Group name", group.name());
+        Allure.parameter("Group header", group.header());
+        Allure.parameter("Group footer", group.footer());
+
         var oldGroups = app.jdbc().getGroupList();
         app.groups().createGroup(group);
         var newGroups = app.jdbc().getGroupList();
@@ -76,9 +88,15 @@ public class GroupCreationTests extends TestBase {
         return result;
     }
 
-    @ParameterizedTest
+    @DisplayName("Создание некорректной группы")
+    @ParameterizedTest(name = "{displayName}")
     @MethodSource("negativeGroupProvider")
     public void canNotCreateGroup(GroupData group) {
+
+        Allure.parameter("Invalid name", group.name());
+        Allure.parameter("Invalid header", group.header());
+        Allure.parameter("Invalid footer", group.footer());
+
         var oldGroups = app.groups().getList();
         app.groups().createGroup(group);
         var newGroups = app.groups().getList();

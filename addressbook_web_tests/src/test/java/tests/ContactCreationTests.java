@@ -3,9 +3,14 @@ package tests;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import common.CommonFunctions;
+import io.qameta.allure.Allure;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Story;
 import model.ContactData;
 import model.GroupData;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -15,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+@Epic("Addressbook")
+@Feature("Contacts")
 public class ContactCreationTests extends TestBase {
 
     public static List<ContactData> contactCreateProvider() throws IOException {
@@ -86,9 +93,26 @@ public class ContactCreationTests extends TestBase {
                 .withHomepage(CommonFunctions.randomString(10)));
     }
 
-    @ParameterizedTest
+    @DisplayName("Создание нового контакта")
+    @ParameterizedTest (name = "{displayName}")
     @MethodSource("singleRandomContact")
     public void canCreateContacts(ContactData contact) {
+        Allure.parameter("Firstname", contact.firstname());
+        Allure.parameter("Lastname", contact.lastname());
+        Allure.parameter("Middlename", contact.middlename());
+        Allure.parameter("Nickname", contact.mobile());
+        Allure.parameter("Title", contact.email());
+        Allure.parameter("Company", contact.email());
+        Allure.parameter("Address", contact.email());
+        Allure.parameter("Home", contact.email());
+        Allure.parameter("Mobile", contact.email());
+        Allure.parameter("Work", contact.email());
+        Allure.parameter("Fax", contact.email());
+        Allure.parameter("Email", contact.email());
+        Allure.parameter("Email2", contact.email());
+        Allure.parameter("Email3", contact.email());
+        Allure.parameter("Homepage", contact.email());
+
         var oldContacts = app.hbm().getContactList();
         app.contacts().createContact(contact);
         var newContacts = app.hbm().getContactList();
@@ -109,16 +133,24 @@ public class ContactCreationTests extends TestBase {
         Assertions.assertEquals(newContacts, expectedList);
     }
 
+    @DisplayName("Создание контакта в выбранной группе")
     @Test
     void canCreateContactInGroup() {
         var contact = new ContactData()
                 .withFirstname(CommonFunctions.randomString(10))
                 .withLastname(CommonFunctions.randomString(10))
                 .withAddress(CommonFunctions.randomString(10));
+
+        Allure.parameter("Firstname", contact.firstname());
+        Allure.parameter("Lastname", contact.lastname());
+        Allure.parameter("Address", contact.address());
+
         if (app.hbm().getGroupCount() == 0) {
             app.hbm().createGroup(new GroupData("", "group name", "group header", "group footer"));
         }
         var group = app.hbm().getGroupList().get(0);
+
+        Allure.parameter("Group Name", group.name());
 
         var oldRelated = app.hbm().getContactsInGroup(group);
         app.contacts().createContactInGroup(contact, group);
